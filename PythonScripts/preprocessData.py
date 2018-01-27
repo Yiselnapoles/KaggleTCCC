@@ -49,7 +49,7 @@ n_severe_toxic = sum(train['severe_toxic']==1)
 n_obscene_values = train.obscene.unique()
 n_obscene = sum(train['obscene']==1)
 
-n_threat_values = train.threat.unique()
+# n_threat_values = train.threat.unique()
 n_threat = sum(train['threat']==1)
 
 n_insult_values = train.insult.unique()
@@ -65,5 +65,4 @@ res['sentence_min_length'] = max_train
 # Count tags
 train.iloc[:,[2,3,4,5,6,7]].sum()
 # Check multitag
-train.iloc[:,[2,3,4,5,6,7]].sum(axis=1)
-train[train.iloc[:,[2,3,4,5,6,7]].sum(axis=1) > 1]
+train[train.iloc[:,[2,3,4,5,6,7]].sum(axis=1) > 1].shape
