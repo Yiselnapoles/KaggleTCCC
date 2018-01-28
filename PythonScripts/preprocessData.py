@@ -3,66 +3,84 @@
 # Phase: Basic Analysis
 #
 #
-# 2018-01-23
+# 2018-01-28
+
+# %% -- Load libraries
+#
+#
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import operator
+import seaborn as sns
+from collections import OrderedDict
+from operator import itemgetter
+# %% -- Load data
+#
+#
 
 train = pd.read_csv('/home/juan/Documents/DataScience/KaggleTCCC/DataToUse/train.csv')
 test = pd.read_csv('/home/juan/Documents/DataScience/KaggleTCCC/DataToUse/test.csv')
 sub = pd.read_csv('/home/juan/Documents/DataScience/KaggleTCCC/DataToUse/sample_submission.csv')
 
-# Dimmensions of the datasets
-train.shape
-test.shape
-sub.shape
+# New Wikipedia Data
 
-# train first 5 rows
-train.head()
-# Test first 5 rows
-test.head()
-# Example of upload file
-sub.head()
+# Toxicity annotated comments
+tac = pd.read_csv('/home/juan/Documents/DataScience/KaggleTCCC/DataToUse/WikipediaData/toxicity_annotated_comments.tsv',sep='\t')
+# Toxicity annotations
+tan = pd.read_csv('/home/juan/Documents/DataScience/KaggleTCCC/DataToUse/WikipediaData/toxicity_annotations.tsv',sep='\t')
+# Toxicity worker demographic
+twd = pd.read_csv('/home/juan/Documents/DataScience/KaggleTCCC/DataToUse/WikipediaData/toxicity_worker_demographics.tsv',sep='\t')
 
-# Train dataset basic analysis
+
+# %% -- Basic Exploratory Data Analysis
 #
 #
-fig, ax = plt.subplots()
-# def basic_analysis_train():
-res = {}
-# Missing values
-na_count = train.isnull().values.any()
-# Split comment_text
-train['comment_text'] = train['comment_text'].str.replace('\n', '')
-train['comment_text_split']  = train['comment_text'].apply(lambda x: x.split())
-# Maximum number of words in a column
-max_train = train.comment_text_split.str.len().max()
-# Minimum number of words in a column
-min_train = train.comment_text_split.str.len().min()
-# Check column has 1 or 0 values and get number of ones
-n_toxic_values = train.toxic.unique()
-n_toxic = sum(train['toxic'] == 1)
+rows_train = train.shape[0]
+rows_test  = test.shape[0]
+allrows = rows_train + rows_test
 
-n_severe_toxic_values = train.severe_toxic.unique()
-n_severe_toxic = sum(train['severe_toxic']==1)
+print('TRAIN ROWS :', rows_train)
+print('TEST ROWS :', rows_test)
+print("Percentages: TRAIN = ",round(rows_train*100/allrows), "% ,TEST = ",round(rows_test*100/allrows),'%')
 
-n_obscene_values = train.obscene.unique()
-n_obscene = sum(train['obscene']==1)
+## Train Dataset
 
-# n_threat_values = train.threat.unique()
-n_threat = sum(train['threat']==1)
+# Clean comments [ No tags ]
+clean_comments = len(train[train.iloc[:,2:].sum(axis=1)==0])
+clean_comments
+train.iloc[:,2:].sum()
 
-n_insult_values = train.insult.unique()
-n_insult = sum(train['insult']==1)
+d_plot_tags = {}
+for col in train.iloc[:,2:]:
+    d_plot_tags[col] = train[col].sum()
 
-n_identity_hate_values = train.identity_hate.unique()
-n_identity_hate = sum(train['identity_hate']==1)
+d_plot_tags['clean_comment'] = clean_comments
+sorted_plot_tags = sorted(d_plot_tags.items(), key=itemgetter(1))
 
-res['na_count'] = na_count
-res['sentence_max_length'] = max_train
-res['sentence_min_length'] = max_train
+plotdata_1 = pd.DataFrame.from_dict(sorted_plot_tags)
+plotdata_1.columns = ['Tag','Count']
 
-# Count tags
-train.iloc[:,[2,3,4,5,6,7]].sum()
-# Check multitag
-train[train.iloc[:,[2,3,4,5,6,7]].sum(axis=1) > 1].shape
+# Graph with tags
+plt.figure(figsize=(8,4))
+
+sns.barplot(plotdata_1.Tag, plotdata_1.Count)
+plt.xticks(rotation=90)
+plt.show()
+
+# Graph with multi-tags
+dmulti_tag=train.iloc[:,2:].sum(axis=1)
+dmulti_tag_count=dmulti_tag.value_counts()
+
+multitagpd = pd.DataFrame({'NTags': dmulti_tag_count.index,'Count': dmulti_tag_count.values})
+
+plt.figure(figsize = (8,4))
+ax = sns.barplot(multitagpd.NTags, multitagpd.Count)
+plt.show()
+
+
+# Correlation between Variables. No clean comments
+toxic_comments = train[train.iloc[:,2:].sum(axis=1) >= 1]
+toxcorr = toxic_comments.iloc[:,2:-1]
+toxcorr.corr()
