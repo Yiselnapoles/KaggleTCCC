@@ -1,0 +1,75 @@
+import numpy as np
+import random
+import sys
+
+class RegresionLineal:
+    
+    def __init__(self, learning_rate=100):
+        '''
+        Inicialización del modelo.
+        Parametros:
+          - learning_rate: define el desplazamiento máximo sobre los pesos en cada iteración.
+        '''
+        self.learning_rate = learning_rate
+    
+    def _H(self, X, w):
+        '''
+        Establece la hipótesis de la regresión lineal. Devuelve la evaluación de dicha hipótesis.
+        '''
+        raise Exception("No implement")
+
+    def _J(self, X, y, w):
+        '''
+        Establece la función de coste y devuelve la evaluación de dicha función de coste
+        '''
+        raise Exception("No implement")
+    
+    def fit(self, X, y, num_iter=100, verbose=True, plot=False):
+        '''
+        Lleva a cabo la búsqueda de los mejores pesos dado los datos de entrada X y la 
+        variable respuesta y.
+        Parámetros:
+          - X: datos de entrada en formato de tabla. Cada fila corresponde a una muestra y cada columna a un atributo.
+          - y: variable de respuesta. Debe contener tantos elementos como filas tiene la entrada.
+          - num_iter: número de iteraciones que queremos ejecutar de algoritmo de búsqueda.
+          - verbose: si es True imprimirá por pantalla mensajes sobre el progreso
+          - plot: si es True mostrará un gráfico de la línea de regresión. Solo en el caso de tener un solo atributo.
+        '''
+        
+        # Comprobamos que el número de filas de la entrada corresponde con el número 
+        # de elementos de la variable de respuesta
+        # ....
+        
+        # Usaremos esta lista para guardar el progreso del ajuste
+        # ....
+
+        # Establecemos el valor del coste al inicio lo mayor posible    
+        # ....
+        
+        # Inicializamos los pesos
+        # ....            
+        
+        # Bucle de iteraciones
+        # ....
+            # actualizamos los pesos aplicando el desfase de los pesos
+            # ....
+            
+            # calculamos el coste con los nuevos pesos
+            # ....
+
+            # si encontramos mejora, actualizamos el los pesos del modelo y guardamos 
+            # la mejora en el histórico
+            # ....
+            
+        # si se pedido mostrar el gráfico del progreso y tenemos un solo atributo 
+        # pintamos las rectas encontradas      
+        # ....        
+        
+        raise Exception("No implement")
+            
+            
+    def predict(self, X):
+        '''
+        Realiza la predicción para los datos de entrada X
+        '''
+        raise Exception("No implement")
